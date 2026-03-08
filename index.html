@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee — Multi Page</title>
+
+<style>
+/* ============================
+   GLOBAL
+============================ */
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #fff;
+    color: #222;
+}
+body.sidebar-open { overflow: hidden; }
+
+/* ============================
+   TOP NAVBAR
+============================ */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 50px;
+    font-size: 13px;
+    background: #111;
+    color: #fff;
+}
+
+.top-nav-left {
+    opacity: 0.85;
+}
+
+.top-nav-right a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 18px;
+    font-size: 13px;
+}
+.top-nav-right a:hover {
+    text-decoration: underline;
+}
+
+
+/* ============================
+   NAVBAR
+============================ */
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 50px;
+    border-bottom: 1px solid #eee;
+}
+.nav-right a {
+    margin-left: 28px;
+    text-decoration: none;
+    color: #333;
+    font-size: 15px;
+}
+
+/* ============================
+   TOP SECTION
+============================ */
+.image-bar {
+    width: 100%;
+    margin: 0 auto 40px;
+}
+.image-bar img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+}
+
+.top-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 50px;
+    margin-bottom: 30px;
+}
+.left-tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.filter-btn,
+.toggle-btn {
+    border: 1px solid #ccc;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #fff;
+    font-size: 14px;
+}
+.sort-box select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* ============================
+   PRODUCT CARD
+============================ */
+.product-card {
+    width: 80%;
+    margin: 0 auto 30px;
+    display: flex;
+    gap: 24px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    transition: .3s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.product-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+    transform: translateY(-2px);
+}
+.product-image {
+    width: 260px;
+    height: 330px;
+    background: #f3f3f3;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+}
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.sold-out-badge {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 8px 18px;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.product-info { flex: 1; }
+.product-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+.price-old {
+    text-decoration: line-through;
+    color: #777;
+    margin-right: 10px;
+}
+.price-new {
+    color: #c0392b;
+    font-weight: bold;
+}
+.product-details {
+    margin-top: 10px;
+    line-height: 1.5;
+    font-size: 14px;
+    color: #444;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+}
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #fff;
+}
+
+/* ============================
+   COMPACT GRID
+============================ */
+.compact #product-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    width: 92%;
+    margin: auto;
+}
+
+.compact .product-card {
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    text-align: center;
+}
+.compact .product-image {
+    width: 100%;
+    height: 220px;
+}
+.compact .product-info { display: none; }
+.compact-title {
+    font-size: 16px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+/* ============================
+   PAGINATION
+============================ */
+.pagination {
+    text-align: center;
+    margin: 40px 0;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    align-items: center;
+}
+.pagination button {
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* ============================
+   SIDEBAR FILTER
+============================ */
+#filter-sidebar {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100%;
+    background: #fff;
+    border-right: 1px solid #ddd;
+    padding: 25px;
+    transition: .3s;
+    overflow-y: auto;
+    z-index: 100000;
+}
+#filter-sidebar.active { left: 0; }
+
+.close-sidebar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #333;
+}
+
+#sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s;
+    z-index: 9999;
+}
+#sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.filter-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 14px;
+}
+.filter-section {
+    margin-bottom: 22px;
+}
+.filter-section label {
+    display: block;
+    margin: 6px 0;
+    font-size: 15px;
+}
+.clear-btn {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #c0392b;
+    color: #c0392b;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- ========== OVERLAY ========== -->
+<div id="sidebar-overlay"></div>
+
+<!-- ========== SIDEBAR FILTER ========== -->
+<div id="filter-sidebar">
+    <button class="close-sidebar" id="closeSidebar">×</button>
+
+    <div class="filter-title">Filter</div>
+
+    <div class="filter-section"><b>Biji Kopi</b>
+        <label><input type="checkbox" class="filter-check" value="arabica"> Arabica</label>
+        <label><input type="checkbox" class="filter-check" value="robusta"> Robusta</label>
+        <label><input type="checkbox" class="filter-check" value="blend"> Blend</label>
+    </div>
+
+    <div class="filter-section"><b>Brewing Methode</b>
+        <label><input type="checkbox" class="filter-check" value="manual"> Manual Brew</label>
+        <label><input type="checkbox" class="filter-check" value="espresso"> Espresso</label>
+    </div>
+
+    <div class="filter-section"><b>Taste Notes</b>
+        <label><input type="checkbox" class="filter-check" value="fruity"> Fruity</label>
+        <label><input type="checkbox" class="filter-check" value="floral"> Floral</label>
+        <label><input type="checkbox" class="filter-check" value="nutty"> Nutty</label>
+    </div>
+
+    <div class="filter-section"><b>Regional</b>
+        <label><input type="checkbox" class="filter-check" value="indonesia"> Indonesia</label>
+        <label><input type="checkbox" class="filter-check" value="luar"> Luar Negeri</label>
+    </div>
+
+    <button class="clear-btn" id="clearFilter">Clear Filter</button>
+</div>
+
+<!-- ========== TOP NAVBAR ========== -->
+<div class="top-nav">
+    <div class="top-nav-left">
+        
+    </div>
+    <div class="top-nav-right">
+        <a href="Home.html">Home</a>
+        <a href="index.html">Our Beans</a>
+        <a href="roastery.html">Roastery</a>
+        <a href="contact.html">Contact Us</a>
+    </div>
+</div>
+
+
+<!-- ========== NAVBAR ========== -->
+<div class="nav">
+    <a href="Home.html">
+        <img src="assets/products/logo.png" alt="Coffee Logo" style="height:32px;">
+    </a>
+    <div class="nav-right">
+        <a href="Daftar.html">Daftar</a>
+        <a href="Login.html">Login</a>
+    </div>
+</div>
+
+
+<!-- ========== BANNER IMAGE ========== -->
+<div class="image-bar">
+    <img src="assets/products/banner beans.jpg" alt="Banner">
+</div>
+
+<!-- ========== TOOLBAR ========== -->
+<div class="top-tools">
+    <div class="left-tools">
+        <button class="filter-btn">☰ FILTER</button>
+        <button class="toggle-btn" id="toggleView">Compact View</button>
+    </div>
+
+    <div class="sort-box">
+        <select>
+            <option>Berdasarkan tanggal, baru ke lama</option>
+            <option>Harga terendah</option>
+            <option>Harga tertinggi</option>
+        </select>
+    </div>
+</div>
+
+<!-- ========== PRODUCT LIST ========== -->
+<div id="product-list"></div>
+
+<!-- ========== PAGINATION ========== -->
+<div class="pagination">
+    <button id="prevPage">←</button>
+    <div id="pageNumber"></div>
+    <button id="nextPage">→</button>
+</div>
+
+<!-- ============================
+     JAVASCRIPT + SORT INTEGRATED
+============================ -->
+<script>
+// Shortcuts
+const qs  = s => document.querySelector(s);
+const qsa = s => [...document.querySelectorAll(s)];
+
+// Product dataset + added DATE
+const products = [
+    {
+        title: "Tanzania Shiviwaka",
+        old: "190.000",
+        price: "162.500",
+        date: "2025-01-14",
+        image: "assets/products/tanzania.jpg",
+        tags: ["arabica", "manual", "floral", "luar"]
+    },
+    {
+        title: "Kenya PB Muchagara",
+        old: "345.000",
+        price: "280.000",
+        date: "2025-01-22",
+        image: "assets/products/kenya.jpg",
+        tags: ["arabica", "manual", "fruity", "luar"]
+    },
+    {
+        title: "Ethiopia Guji Natural",
+        old: "260.000",
+        price: "199.000",
+        date: "2024-12-20",
+        image: "assets/products/ethiopia.jpg",
+        tags: ["arabica", "espresso", "floral", "luar"]
+    },
+    {
+        title: "Colombia El Vergel",
+        old: "310.000",
+        price: "250.000",
+        date: "2025-01-07",
+        image: "assets/products/colombia.jpg",
+        tags: ["blend", "espresso", "nutty", "luar"]
+    },
+    {
+        title: "Panama Don Pachi",
+        old: "650.000",
+        price: "520.000",
+        date: "2025-02-01",
+        image: "assets/products/panama.jpg",
+        tags: ["arabica", "manual", "fruity", "luar"]
+    },
+    {
+        title: "Honduras Los Lajones",
+        old: "225.000",
+        price: "180.000",
+        date: "2025-01-11",
+        image: "assets/products/honduras.jpg",
+        tags: ["arabica", "manual", "nutty", "luar"]
+    },
+    {
+        title: "Costa Rica Tarrazu",
+        old: "240.000",
+        price: "210.000",
+        date: "2025-01-04",
+        image: "assets/products/costarica.jpg",
+        tags: ["arabica", "manual", "floral", "luar"]
+    },
+    {
+        title: "Guatemala Huehuetenango",
+        old: "275.000",
+        price: "230.000",
+        date: "2024-12-28",
+        image: "assets/products/guatemala.jpg",
+        tags: ["arabica", "espresso", "nutty", "luar"]
+    },
+    {
+        title: "Brazil Cerrado",
+        old: "180.000",
+        price: "150.000",
+        date: "2025-01-02",
+        image: "assets/products/brazil.jpg",
+        tags: ["blend", "manual", "nutty", "indonesia"]
+    }
+];
+
+let filtered = [...products];
+let page = 1;
+let compact = false;
+const perPage = 3;
+
+/* ============================
+   SIDEBAR CONTROLS
+============================ */
+function openSidebar() {
+    qs("#filter-sidebar").classList.add("active");
+    qs("#sidebar-overlay").classList.add("active");
+    document.body.classList.add("sidebar-open");
+}
+
+function closeSidebar() {
+    qs("#filter-sidebar").classList.remove("active");
+    qs("#sidebar-overlay").classList.remove("active");
+    document.body.classList.remove("sidebar-open");
+}
+
+qs(".filter-btn").onclick = openSidebar;
+qs("#closeSidebar").onclick = closeSidebar;
+qs("#sidebar-overlay").onclick = closeSidebar;
+
+// Close if clicking outside
+document.addEventListener("click", e => {
+    const sidebar = qs("#filter-sidebar");
+    const btn = qs(".filter-btn");
+    if (!sidebar.contains(e.target) && !btn.contains(e.target) && sidebar.classList.contains("active")) {
+        closeSidebar();
+    }
+});
+
+/* ============================
+   FILTERING
+============================ */
+function applyFilters() {
+    const selected = qsa(".filter-check:checked").map(c => c.value);
+    filtered = selected.length
+        ? products.filter(p => selected.every(t => p.tags.includes(t)))
+        : [...products];
+
+    applySort();
+}
+
+qsa(".filter-check").forEach(c => c.onchange = () => {
+    applyFilters();
+    closeSidebar();
+});
+
+qs("#clearFilter").onclick = () => {
+    qsa(".filter-check").forEach(c => c.checked = false);
+    applyFilters();
+    closeSidebar();
+};
+
+/* ============================
+   SORTING SYSTEM
+============================ */
+qs(".sort-box select").onchange = () => applySort();
+
+function applySort() {
+    const sortVal = qs(".sort-box select").value;
+
+    if (sortVal.includes("tanggal")) {
+        filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+    }
+    if (sortVal.includes("terendah")) {
+        filtered.sort((a,b) => toNum(a.price) - toNum(b.price));
+    }
+    if (sortVal.includes("tertinggi")) {
+        filtered.sort((a,b) => toNum(b.price) - toNum(a.price));
+    }
+
+    page = 1;
+    render();
+}
+
+function toNum(str) {
+    return Number(str.replace(/\./g,""));
+}
+
+/* ============================
+   RENDER PRODUCTS
+============================ */
+function render() {
+    const listEl = qs("#product-list");
+    listEl.innerHTML = "";
+
+    document.body.classList.toggle("compact", compact);
+
+    const per = compact ? 9 : perPage;
+    const list = filtered.slice((page - 1) * per, page * per);
+
+    list.forEach(p => {
+        const priceNumber = toNum(p.price);
+        const imgSrc = p.image || "assets/products/placeholder.jpg";
+
+        listEl.innerHTML += compact
+            ? `
+            <div class="product-card" data-price="${priceNumber}" data-date="${p.date}">
+                <div class="product-image">
+                    <img src="${imgSrc}" alt="${p.title}">
+                    <div class="sold-out-badge">Sold Out</div>
+                </div>
+                <div class="compact-title">${p.title}</div>
+            </div>
+            `
+            : `
+            <div class="product-card" data-price="${priceNumber}" data-date="${p.date}">
+                <div class="product-image">
+                    <img src="${imgSrc}" alt="${p.title}">
+                    <div class="sold-out-badge">Sold Out</div>
+                </div>
+
+                <div class="product-info">
+                    <div class="product-title">${p.title}</div>
+                    <div>
+                        <span class="price-old">Rp. ${p.old}</span>
+                        <span class="price-new">Rp. ${p.price}</span>
+                    </div>
+
+                    <div class="product-details">
+                        Region: Example<br>
+                        Process: Washed<br>
+                        Varietal: Bourbon<br>
+                        Notes: Chocolate, Citrus<br>
+                        Weight: 250gr
+                    </div>
+
+                    <div class="actions">
+                        <div class="icon-btn">+</div>
+                        <div class="icon-btn">♥</div>
+                        <div class="icon-btn cart-btn">🛒</div>
+                    </div>
+                </div>
+            </div>
+            `;
+    });
+
+    const totalPages = Math.ceil(filtered.length / per);
+    qs("#pageNumber").textContent = `Page ${page} / ${totalPages}`;
+}
+
+
+/* ============================
+   PAGINATION BUTTONS
+============================ */
+qs("#toggleView").onclick = () => {
+    compact = !compact;
+    page = 1;
+    render();
+};
+
+qs("#nextPage").onclick = () => {
+    const max = Math.ceil(filtered.length / (compact ? 9 : perPage));
+    if (page < max) {
+        page++;
+        render();
+    }
+};
+
+qs("#prevPage").onclick = () => {
+    if (page > 1) {
+        page--;
+        render();
+    }
+};
+
+// INITIAL RENDER
+applySort();
+render();
+
+document.addEventListener("click", e => {
+    if (e.target.closest(".cart-btn")) {
+        openCart();
+    }
+});
+
+
+</script>
+
+<!-- CART OVERLAY -->
+<div id="cart-overlay">
+    <div id="cart-container"></div>
+</div>
+
+<link rel="stylesheet" href="assets/cart/cart.css">
+<script src="assets/cart/cart.js"></script>
+
+</body>
+</html>

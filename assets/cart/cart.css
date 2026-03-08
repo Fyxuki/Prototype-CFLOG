@@ -1,0 +1,56 @@
+/* assets/cart/cart.css */
+
+/* OVERLAY */
+#cart-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200000;
+}
+
+/* MINI PAGE CANVAS */
+.cart-page {
+    width: 70vw;
+    max-width: 900px;
+    height: 70vh;              /* ✅ REQUIRED */
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+/* HEADER */
+.cart-page-header {
+    height: 64px;
+    border-bottom: 1px solid #eee;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cart-page-header h1 {
+    font-size: 18px;
+    margin: 0;
+}
+
+/* CLOSE */
+.cart-close {
+    border: none;
+    background: none;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+/* BODY (WHITE CANVAS AREA) */
+.cart-page-body {
+    flex: 1;
+    background: #fff;
+}
+
